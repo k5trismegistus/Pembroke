@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pembroke/pages/add_card_page.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 
@@ -116,6 +117,16 @@ class _MyAppState extends State<MyApp> {
                   _buildButton(
                     onPressed: requirePermission,
                     label: 'Permission',
+                  ),
+                  _buildButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => AddCardPage()),
+                      );
+                    },
+                    label: 'Add Card',
                   ),
                 ],
               ),
