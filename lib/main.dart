@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pembroke/pages/add_card_page.dart';
+import 'package:pembroke/pages/card_list_page.dart';
 import 'package:speech_recognition/speech_recognition.dart';
 import 'package:simple_permissions/simple_permissions.dart';
+import 'package:pembroke/repositories/db.dart';
 
 void main() {
-  runApp(new MyApp());
+  DbStore.initialize()
+    .then((_) => runApp(new MyApp()));
 }
 
 const languages = const [
@@ -22,12 +25,21 @@ class Language {
   const Language(this.name, this.code);
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      home: HomeScreen(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => new _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   SpeechRecognition _speech;
 
   bool _speechRecognitionAvailable = false;
@@ -75,63 +87,69 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text('SpeechRecognition'),
-          actions: [
-            new PopupMenuButton<Language>(
-              onSelected: _selectLangHandler,
-              itemBuilder: (BuildContext context) => _buildLanguagesWidgets,
-            )
-          ],
-        ),
-        body: new Padding(
-            padding: new EdgeInsets.all(8.0),
-            child: new Center(
-              child: new Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  new Expanded(
-                      child: new Container(
-                          padding: const EdgeInsets.all(8.0),
-                          color: Colors.grey.shade200,
-                          child: new Text(transcription))),
-                  _buildButton(
-                    onPressed: _speechRecognitionAvailable && !_isListening
-                        ? () => start()
-                        : null,
-                    label: _isListening
-                        ? 'Listening...'
-                        : 'Listen (${selectedLang.code})',
-                  ),
-                  _buildButton(
-                    onPressed: _isListening ? () => cancel() : null,
-                    label: 'Cancel',
-                  ),
-                  _buildButton(
-                    onPressed: _isListening ? () => stop() : null,
-                    label: 'Stop',
-                  ),
-                  _buildButton(
-                    onPressed: requirePermission,
-                    label: 'Permission',
-                  ),
-                  _buildButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => AddCardPage()),
-                      );
-                    },
-                    label: 'Add Card',
-                  ),
-                ],
-              ),
-            )),
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('SpeechRecognition'),
+        actions: [
+          new PopupMenuButton<Language>(
+            onSelected: _selectLangHandler,
+            itemBuilder: (BuildContext context) => _buildLanguagesWidgets,
+          )
+        ],
       ),
+      body: new Padding(
+          padding: new EdgeInsets.all(8.0),
+          child: new Center(
+            child: new Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                new Expanded(
+                    child: new Container(
+                        padding: const EdgeInsets.all(8.0),
+                        color: Colors.grey.shade200,
+                        child: new Text(transcription))),
+                _buildButton(
+                  onPressed: _speechRecognitionAvailable && !_isListening
+                      ? () => start()
+                      : null,
+                  label: _isListening
+                      ? 'Listening...'
+                      : 'Listen (${selectedLang.code})',
+                ),
+                _buildButton(
+                  onPressed: _isListening ? () => cancel() : null,
+                  label: 'Cancel',
+                ),
+                _buildButton(
+                  onPressed: _isListening ? () => stop() : null,
+                  label: 'Stop',
+                ),
+                _buildButton(
+                  onPressed: requirePermission,
+                  label: 'Permission',
+                ),
+                _buildButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      new MaterialPageRoute(builder: (context) => new AddCardPage()),
+                    );
+                  },
+                  label: 'AddCard',
+                ),
+                _buildButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      new MaterialPageRoute(builder: (context) => new CardListPage()),
+                    );
+                  },
+                  label: 'CardList',
+                ),
+              ],
+            ),
+          )),
     );
   }
 

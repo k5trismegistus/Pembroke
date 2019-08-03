@@ -12,4 +12,8 @@ class Card {
       'language': language,
     };
   }
+
+  static Card fromMap(Map<String, dynamic> map) {
+    return Card(id: map['id'], text: map['text'], language: map['language']);
+  }
 }
