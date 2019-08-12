@@ -3,7 +3,20 @@ import 'package:simple_permissions/simple_permissions.dart';
 import 'package:pembroke/constants/constants.dart';
 
 class VoiceRecognizerStore {
+  static bool initialized = false;
   static VoiceRecognizer _voice_recognizer;
+
+  static void initialize() {
+    _voice_recognizer = new VoiceRecognizer();
+    initialized = true;
+  }
+
+  static VoiceRecognizer get_instance () {
+    if (!initialized) {
+      initialize();
+    }
+    return _voice_recognizer;
+  }
 }
 
 class VoiceRecognizer {

@@ -1,4 +1,4 @@
-const languages = const [
+const LANGUAGES = const [
   const Language('Francais', 'fr_FR'),
   const Language('English', 'en_US'),
   const Language('Pусский', 'ru_RU'),
