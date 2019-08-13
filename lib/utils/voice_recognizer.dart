@@ -4,27 +4,32 @@ import 'package:pembroke/constants/constants.dart';
 
 class VoiceRecognizerStore {
   static bool initialized = false;
-  static VoiceRecognizer _voice_recognizer;
+  static VoiceRecognizer _voiceRecognizer;
 
   static void initialize() {
-    _voice_recognizer = new VoiceRecognizer();
+    _voiceRecognizer = new VoiceRecognizer();
     initialized = true;
   }
 
-  static VoiceRecognizer get_instance () {
+  static VoiceRecognizer getInstance () {
     if (!initialized) {
       initialize();
     }
-    return _voice_recognizer;
+    return _voiceRecognizer;
   }
 }
 
 class VoiceRecognizer {
-  bool _voice_regcognition_permitted = false;
+  bool _voiceRecognitionPermitted = false;
   bool _speechRecognitionAvailable = false;
   bool _isListening = false;
+  String _lastRecognizedText = '';
 
   SpeechRecognition _speech;
+
+  VoiceRecognizer() {
+    activateSpeechRecognizer();
+  }
 
   Future<bool> requirePermission() async {
     if (!await SimplePermissions.checkPermission(Permission.RecordAudio)) {
@@ -39,21 +44,25 @@ class VoiceRecognizer {
   void activateSpeechRecognizer() async {
     _speech = new SpeechRecognition();
     // _speech.setAvailabilityHandler(onSpeechAvailability);
-    // _speech.setCurrentLocaleHandler(onCurrentLocale);
-    // _speech.setRecognitionStartedHandler(onRecognitionStarted);
-    // _speech.setRecognitionResultHandler(onRecognitionResult);
-    // _speech.setRecognitionCompleteHandler(onRecognitionComplete);
+    _speech.setRecognitionStartedHandler(() {
+      _lastRecognizedText = '';
+      _isListening = true;
+    });
+    _speech.setRecognitionResultHandler((String recognizedText) {
+      _lastRecognizedText = recognizedText;
+    });
+    _speech.setRecognitionCompleteHandler(() {
+      _isListening = false;
+    });
     // _speech.setErrorHandler(errorHandler);
 
-    _voice_regcognition_permitted = await requirePermission();;
+    _voiceRecognitionPermitted = await requirePermission();;
     _speechRecognitionAvailable = await _speech.activate();
   }
 
   void startListening(Language lang) async {
     var langCode = lang.code;
-
-    _isListening = true;
-    await _speech.listen(locale: langCode)
+    await _speech.listen(locale: langCode);
   }
 
   void cancelListening() async {
@@ -62,7 +71,8 @@ class VoiceRecognizer {
   }
 
   Future<String> finishListening() async {
-    var result = await _speech.stop();
-    return result;
+    await _speech.stop();
+    print(_lastRecognizedText);
+    return _lastRecognizedText;
   }
 }

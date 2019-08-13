@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pembroke/repositories/card_repository.dart';
 import 'package:pembroke/models/card.dart' as models;
+import 'package:pembroke/pages/show_card_page.dart';
 
 class CardListPage extends StatefulWidget {
   @override
@@ -38,6 +39,12 @@ class _CardListPageState extends State<CardListPage> {
         horizontal: 33,
       ),
       child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            new MaterialPageRoute(builder: (context) => new ShowCardPage(currentCard: card)),
+          );
+        },
         child: Column(
           children: <Widget>[
             Container(

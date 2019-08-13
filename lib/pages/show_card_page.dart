@@ -4,18 +4,22 @@ import 'package:pembroke/models/card.dart' as models;
 import 'package:pembroke/utils/voice_recognizer.dart';
 
 class ShowCardPage extends StatefulWidget {
+  final models.Card currentCard;
+
+  ShowCardPage({Key key, @required this.currentCard}) : super(key: key);
+
+
   @override
   State<StatefulWidget> createState() => new _ShowCardPageState();
 }
 
 class _ShowCardPageState extends State<ShowCardPage> {
-  models.Card currentCard;
   String answer = '';
   bool isAnsering = false;
-  VoiceRecognizer voice_recognizer = VoiceRecognizerStore.get_instance();
+  VoiceRecognizer voiceRecognizer = VoiceRecognizerStore.getInstance();
 
   void onStartAnswering() async {
-    await voice_recognizer.startListening(currentCard.lang());
+    await voiceRecognizer.startListening(widget.currentCard.lang());
     setState(() {
       answer = '';
       isAnsering = true;
@@ -23,14 +27,14 @@ class _ShowCardPageState extends State<ShowCardPage> {
   }
 
   void onCancelAnswering() async {
-    await voice_recognizer.cancelListening();
+    await voiceRecognizer.cancelListening();
     setState(() {
       isAnsering = false;
     });
   }
 
   void onCompleteAnswering() async {
-    var res = await voice_recognizer.finishListening();
+    var res = await voiceRecognizer.finishListening();
     setState(() {
       isAnsering = false;
       answer = res;
@@ -54,7 +58,7 @@ class _ShowCardPageState extends State<ShowCardPage> {
       ),
       body: Column(
         children: <Widget>[
-          Text(currentCard.text),
+          Text(widget.currentCard.text),
           Text(answer),
           RaisedButton(
             color: Colors.cyan.shade600,

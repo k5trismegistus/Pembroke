@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pembroke/pages/add_card_page.dart';
 import 'package:pembroke/pages/card_list_page.dart';
-import 'package:speech_recognition/speech_recognition.dart';
-import 'package:simple_permissions/simple_permissions.dart';
 import 'package:pembroke/repositories/db.dart';
-import 'package:pembroke/constants/constants.dart';
 
 void main() {
   DbStore.initialize()
