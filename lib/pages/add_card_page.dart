@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pembroke/pages/card_list_page.dart';
 import 'package:pembroke/repositories/card_repository.dart';
 import 'package:pembroke/models/card.dart' as models;
 
@@ -19,6 +20,11 @@ class _AddCardPageState extends State<AddCardPage> {
     );
 
     await cardRepository.insertCard(card);
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CardListPage())
+    );
   }
 
   @override
@@ -28,30 +34,42 @@ class _AddCardPageState extends State<AddCardPage> {
         title: new Text('SpeechRecognition'),
         actions: [],
       ),
-      body: Column(
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: "テキストボックス",
-              hintText: "まぁ何か入力してみてよ！",
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(8, 0, 8, 6),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Input text here",
+                  hintText: "Text",
+                ),
+                onChanged: (text) {
+                  setState(() {
+                    this._inputtingText = text;
+                  });
+                }
+              ),
             ),
-            onChanged: (text) {
-              setState(() {
-                this._inputtingText = text;
-              });
-            }
-          ),
-          RaisedButton(
-            color: Colors.cyan.shade600,
-            onPressed: onSaveCard,
-            child: new Text(
-              'Save',
-              style: const TextStyle(color: Colors.white),
+            Padding(
+              padding: EdgeInsets.only(right:8),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: RaisedButton(
+                  color: Colors.cyan.shade600,
+                  onPressed: onSaveCard,
+                  child: new Text(
+                    'Save',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                )
+              )
             ),
-          )
-        ]
-      ),
+          ]
+        ),
+      )
     );
   }
 }

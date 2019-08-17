@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pembroke/pages/add_card_page.dart';
 import 'package:pembroke/repositories/card_repository.dart';
 import 'package:pembroke/models/card.dart' as models;
 import 'package:pembroke/pages/show_card_page.dart';
@@ -89,7 +90,15 @@ class _CardListPageState extends State<CardListPage> {
         title: new Text('SpeechRecognition'),
         actions: [],
       ),
-      body: _buildList(context)
+      body: _buildList(context),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AddCardPage())
+          );
+        },
+      ),
     );
   }
 }
