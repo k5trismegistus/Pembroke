@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pembroke/models/card.dart' as models;
+import 'package:pembroke/utils/text_to_speech.dart';
 import 'package:pembroke/utils/voice_recognizer.dart';
 
 class ShowCardPage extends StatefulWidget {
@@ -49,6 +50,11 @@ class _ShowCardPageState extends State<ShowCardPage> {
     }
   }
 
+  void onPressPlayButton() {
+    var _textToSpeech = TextToSpeechStore.getInstance();
+    _textToSpeech.speak(widget.currentCard.text, widget.currentCard.lang());
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -60,6 +66,14 @@ class _ShowCardPageState extends State<ShowCardPage> {
         children: <Widget>[
           Text(widget.currentCard.text),
           Text(answer),
+          RaisedButton(
+            color: Colors.cyan.shade600,
+            onPressed: onPressPlayButton,
+            child: new Text(
+              'Play',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
           RaisedButton(
             color: Colors.cyan.shade600,
             onPressed: onPressButton,
