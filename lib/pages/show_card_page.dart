@@ -94,20 +94,41 @@ class ShowCardPage extends StatefulWidget {
 }
 
 class _ShowCardPageState extends State<ShowCardPage> {
+  List<Widget> _pages = [];
+
+  @override
+  void   initState() {
+    _pages = [
+      ShowCardWidget(currentCard: widget.currentCard),
+      ShowCardWidget(currentCard: widget.currentCard),
+      ShowCardWidget(currentCard: widget.currentCard),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    PageController _pageController = PageController(initialPage: 1);
+    
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('SpeechRecognition'),
           actions: [],
         ),
         body: PageView(
-          children: [
-            ShowCardWidget(currentCard: widget.currentCard),
-            ShowCardWidget(currentCard: widget.currentCard),
-            ShowCardWidget(currentCard: widget.currentCard),
-          ]
+          children: _pages,
+          controller: _pageController,
+          onPageChanged: (pageNum) {
+            if (pageNum == _pages.length - 1) {
+              setState(() {
+                // _pages.add(ShowCardWidget(currentCard: widget.currentCard),);
+              });
+            } else if (pageNum == 0) {
+              setState(() {
+                _pages = [ShowCardWidget(currentCard: widget.currentCard)]..addAll(_pages);
+              });
+              _pageController.jumpToPage(1);
+            }
+          }
         )
       );
   }
