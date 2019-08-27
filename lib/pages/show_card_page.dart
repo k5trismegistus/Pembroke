@@ -4,17 +4,17 @@ import 'package:pembroke/models/card.dart' as models;
 import 'package:pembroke/utils/text_to_speech.dart';
 import 'package:pembroke/utils/voice_recognizer.dart';
 
-class ShowCardPage extends StatefulWidget {
+class ShowCardWidget extends StatefulWidget {
   final models.Card currentCard;
 
-  ShowCardPage({Key key, @required this.currentCard}) : super(key: key);
+  ShowCardWidget({Key key, @required this.currentCard}) : super(key: key);
 
 
   @override
-  State<StatefulWidget> createState() => new _ShowCardPageState();
+  State<StatefulWidget> createState() => new _ShowCardWidgetState();
 }
 
-class _ShowCardPageState extends State<ShowCardPage> {
+class _ShowCardWidgetState extends State<ShowCardWidget> {
   String answer = '';
   bool isAnsering = false;
   VoiceRecognizer voiceRecognizer = VoiceRecognizerStore.getInstance();
@@ -57,12 +57,7 @@ class _ShowCardPageState extends State<ShowCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('SpeechRecognition'),
-        actions: [],
-      ),
-      body: Column(
+    return Column(
         children: <Widget>[
           Text(widget.currentCard.text),
           Text(answer),
@@ -83,7 +78,37 @@ class _ShowCardPageState extends State<ShowCardPage> {
             ),
           )
         ]
-      ),
-    );
+      );
+  }
+}
+
+class ShowCardPage extends StatefulWidget {
+  final models.Card currentCard;
+
+  ShowCardPage({Key key, @required this.currentCard}) : super(key: key);
+
+
+  @override
+  State<StatefulWidget> createState() => new _ShowCardPageState();
+
+}
+
+class _ShowCardPageState extends State<ShowCardPage> {
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: new AppBar(
+          title: new Text('SpeechRecognition'),
+          actions: [],
+        ),
+        body: PageView(
+          children: [
+            ShowCardWidget(currentCard: widget.currentCard),
+            ShowCardWidget(currentCard: widget.currentCard),
+            ShowCardWidget(currentCard: widget.currentCard),
+          ]
+        )
+      );
   }
 }
