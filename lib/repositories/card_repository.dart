@@ -37,14 +37,13 @@ class CardRepository {
       limit: 1,
     )).toList();
 
-    print('previousdone');
+    print(result[0]);
 
     return models.Card.fromMap(result[0]);
   }
 
   Future<models.Card> nextCard({int id}) async {
     final Database _db = DbStore.database;
-    print('next');
 
     var result = (await _db.query(
       'cards',
@@ -53,7 +52,8 @@ class CardRepository {
       whereArgs: [id],
       limit: 1,
     )).toList();
-    print('nextdone');
+
+    print(result[0]);
 
     return models.Card.fromMap(result[0]);
   }

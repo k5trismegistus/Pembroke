@@ -128,29 +128,22 @@ class _ShowCardPageState extends State<ShowCardPage> {
               return ShowCardWidget(currentCard: widget.currentCard);
             }
 
+
             var cardFuture = (currentPageIndex >= index) ?
               cardRepository.previousCard(id: widget.currentCard.id) :
               cardRepository.nextCard(id: widget.currentCard.id);
 
-            print(currentPageIndex);
-            print(index);
             currentPageIndex = index;
 
-            var card;
-            var called = false;
-            var finished = false;
-            while(true) {
-              if (finished) break;
-              if (!called) {
-                called = true;
-                cardFuture.then((c) {
-                  card = c;
-                  finished = true;
-                });
+            return FutureBuilder(
+              future: cardFuture,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return ShowCardWidget(currentCard: snapshot.data);
               }
-              sleep(Duration(milliseconds: 200));
-            }
-            return ShowCardWidget(currentCard: card);
+            );
           },
         )
       );
