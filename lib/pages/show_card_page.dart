@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pembroke/models/card.dart' as models;
+import 'package:pembroke/repositories/card_repository.dart';
 import 'package:pembroke/utils/text_to_speech.dart';
 import 'package:pembroke/utils/voice_recognizer.dart';
 
@@ -94,41 +97,61 @@ class ShowCardPage extends StatefulWidget {
 }
 
 class _ShowCardPageState extends State<ShowCardPage> {
-  List<Widget> _pages = [];
+  final CardRepository cardRepository = new CardRepository();
+  int currentPageIndex = 0;
+  bool isFirst = true;
+  // List<Widget> _pages = [];
 
-  @override
-  void   initState() {
-    _pages = [
-      ShowCardWidget(currentCard: widget.currentCard),
-      ShowCardWidget(currentCard: widget.currentCard),
-      ShowCardWidget(currentCard: widget.currentCard),
-    ];
-  }
+  // @override
+  // void   initState() {
+  //   _pages = [
+  //     ShowCardWidget(currentCard: widget.currentCard),
+  //     ShowCardWidget(currentCard: widget.currentCard),
+  //     ShowCardWidget(currentCard: widget.currentCard),
+  //   ];
+  // }
 
   @override
   Widget build(BuildContext context) {
     PageController _pageController = PageController(initialPage: 1);
-    
+
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('SpeechRecognition'),
           actions: [],
         ),
-        body: PageView(
-          children: _pages,
+        body: PageView.builder(
           controller: _pageController,
-          onPageChanged: (pageNum) {
-            if (pageNum == _pages.length - 1) {
-              setState(() {
-                // _pages.add(ShowCardWidget(currentCard: widget.currentCard),);
-              });
-            } else if (pageNum == 0) {
-              setState(() {
-                _pages = [ShowCardWidget(currentCard: widget.currentCard)]..addAll(_pages);
-              });
-              _pageController.jumpToPage(1);
+          itemBuilder: (BuildContext context, int index) {
+            if (isFirst) {
+              isFirst = false;
+              return ShowCardWidget(currentCard: widget.currentCard);
             }
-          }
+
+            var cardFuture = (currentPageIndex >= index) ?
+              cardRepository.previousCard(id: widget.currentCard.id) :
+              cardRepository.nextCard(id: widget.currentCard.id);
+
+            print(currentPageIndex);
+            print(index);
+            currentPageIndex = index;
+
+            var card;
+            var called = false;
+            var finished = false;
+            while(true) {
+              if (finished) break;
+              if (!called) {
+                called = true;
+                cardFuture.then((c) {
+                  card = c;
+                  finished = true;
+                });
+              }
+              sleep(Duration(milliseconds: 200));
+            }
+            return ShowCardWidget(currentCard: card);
+          },
         )
       );
   }
