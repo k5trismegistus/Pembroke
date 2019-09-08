@@ -106,7 +106,12 @@ class _ShowCardPageState extends State<ShowCardPage> {
         ),
         body: PageView.builder(
           controller: _pageController,
+          itemCount: (widget.cardIds.length + 1),
           itemBuilder: (BuildContext context, int index) {
+            if (index == widget.cardIds.length) {
+              return Center(child: Text('Finished'));
+            }
+
             var cardFuture = cardRepository.getCardById(widget.cardIds[index]);
 
             return FutureBuilder(
