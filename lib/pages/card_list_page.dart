@@ -13,12 +13,16 @@ class CardListPage extends StatefulWidget {
 class _CardListPageState extends State<CardListPage> {
   List<models.Card> cards;
   final CardRepository cardRepository = new CardRepository();
+  // Displaying cards
   List<models.Card> _cardList = [];
+  // To be displayed cards, including not loaded
+  List<int> _conditionedCardIds = [];
 
   @override
   void initState() {
     super.initState();
     loadCards(0);
+    loadCardIds();
   }
 
   Future loadCards(offset) async {
@@ -26,6 +30,11 @@ class _CardListPageState extends State<CardListPage> {
     setState(() {
       _cardList.addAll(cards);
     });
+  }
+
+  // @TODO receive condition
+  Future loadCardIds() async {
+    _conditionedCardIds = await cardRepository.listIds();
   }
 
   Widget _buildCard(BuildContext context, models.Card card) {
@@ -43,7 +52,7 @@ class _CardListPageState extends State<CardListPage> {
         onTap: () {
           Navigator.push(
             context,
-            new MaterialPageRoute(builder: (context) => new ShowCardPage(currentCard: card)),
+            new MaterialPageRoute(builder: (context) => new ShowCardPage(currentCard: card, cardIds: _conditionedCardIds,)),
           );
         },
         child: Column(

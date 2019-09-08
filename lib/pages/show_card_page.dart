@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pembroke/models/card.dart' as models;
@@ -11,7 +9,6 @@ class ShowCardWidget extends StatefulWidget {
   final models.Card currentCard;
 
   ShowCardWidget({Key key, @required this.currentCard}) : super(key: key);
-
 
   @override
   State<StatefulWidget> createState() => new _ShowCardWidgetState();
@@ -87,33 +84,20 @@ class _ShowCardWidgetState extends State<ShowCardWidget> {
 
 class ShowCardPage extends StatefulWidget {
   final models.Card currentCard;
+  final List<int> cardIds;
 
-  ShowCardPage({Key key, @required this.currentCard}) : super(key: key);
-
+  ShowCardPage({Key key, @required this.currentCard, @required this.cardIds}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => new _ShowCardPageState();
-
 }
 
 class _ShowCardPageState extends State<ShowCardPage> {
   final CardRepository cardRepository = new CardRepository();
-  int currentPageIndex = 0;
-  bool isFirst = true;
-  // List<Widget> _pages = [];
-
-  // @override
-  // void   initState() {
-  //   _pages = [
-  //     ShowCardWidget(currentCard: widget.currentCard),
-  //     ShowCardWidget(currentCard: widget.currentCard),
-  //     ShowCardWidget(currentCard: widget.currentCard),
-  //   ];
-  // }
 
   @override
   Widget build(BuildContext context) {
-    PageController _pageController = PageController(initialPage: 1);
+    PageController _pageController = PageController(initialPage: widget.cardIds.indexOf(widget.currentCard.id));
 
     return new Scaffold(
         appBar: new AppBar(
@@ -123,17 +107,7 @@ class _ShowCardPageState extends State<ShowCardPage> {
         body: PageView.builder(
           controller: _pageController,
           itemBuilder: (BuildContext context, int index) {
-            if (isFirst) {
-              isFirst = false;
-              return ShowCardWidget(currentCard: widget.currentCard);
-            }
-
-
-            var cardFuture = (currentPageIndex >= index) ?
-              cardRepository.previousCard(id: widget.currentCard.id) :
-              cardRepository.nextCard(id: widget.currentCard.id);
-
-            currentPageIndex = index;
+            var cardFuture = cardRepository.getCardById(widget.cardIds[index]);
 
             return FutureBuilder(
               future: cardFuture,

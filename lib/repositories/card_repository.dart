@@ -24,10 +24,39 @@ class CardRepository {
     return result.map((r) => models.Card.fromMap(r)).toList();
   }
 
+  Future<models.Card> getCardById(int id) async {
+    final Database _db = DbStore.database;
+
+    var result = (await _db.query(
+      'cards',
+      columns: ['id', 'text', 'language'],
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    )).toList();
+
+    if (result.length == 0) {
+      return null;
+    }
+
+    return models.Card.fromMap(result[0]);
+  }
+
+  Future<List<int>> listIds() async {
+    final Database _db = DbStore.database;
+
+    var result = (await _db.query(
+      'cards',
+      columns: ['id'],
+    )).toList();
+
+    return result.map((_result) {
+      return _result['id'] as int;
+    }).toList();
+  }
+
   Future<models.Card> previousCard({int id}) async {
     final Database _db = DbStore.database;
-    print('previous');
-
 
     var result = (await _db.query(
       'cards',
@@ -37,7 +66,9 @@ class CardRepository {
       limit: 1,
     )).toList();
 
-    print(result[0]);
+    if (result.length == 0) {
+      return null;
+    }
 
     return models.Card.fromMap(result[0]);
   }
@@ -53,7 +84,9 @@ class CardRepository {
       limit: 1,
     )).toList();
 
-    print(result[0]);
+    if (result.length == 0) {
+      return null;
+    }
 
     return models.Card.fromMap(result[0]);
   }
