@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pembroke/constants/constants.dart';
 import 'package:pembroke/pages/card_list_page.dart';
 import 'package:pembroke/repositories/card_repository.dart';
 import 'package:pembroke/models/card.dart' as models;
@@ -11,12 +12,14 @@ class AddCardPage extends StatefulWidget {
 
 class _AddCardPageState extends State<AddCardPage> {
   String _inputtingText = '';
+  // マジックナンバー
+  Language _language = LANGUAGES[0];
   final CardRepository cardRepository = new CardRepository();
 
   void onSaveCard() async {
     final card = new models.Card(
       text: _inputtingText,
-      language: 'en_US',
+      language: _language.code,
     );
 
     await cardRepository.insertCard(card);
@@ -52,6 +55,25 @@ class _AddCardPageState extends State<AddCardPage> {
                   });
                 }
               ),
+            ),
+            Padding(
+              padding:EdgeInsets.only(right:8),
+              child: DropdownButton<Language>(
+                value: _language,
+                onChanged: (Language newValue) {
+                  setState(() {
+                    _language = newValue;
+                  });
+                },
+                items: LANGUAGES
+                  .map<DropdownMenuItem<Language>>((Language value) {
+                    return DropdownMenuItem<Language>(
+                      value: value,
+                      child: Text(value.name),
+                    );
+                  })
+                  .toList(),
+              )
             ),
             Padding(
               padding: EdgeInsets.only(right:8),

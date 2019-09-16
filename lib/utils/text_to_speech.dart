@@ -25,6 +25,10 @@ class TextToSpeech {
     _flutterTts = new FlutterTts();
   }
 
+  Future checkIsLanguageAvailable(Language lang) async {
+    return await _flutterTts.isLanguageAvailable(lang.code);
+  }
+
   Future speak(String text, Language lang) async{
     await _flutterTts.setLanguage(lang.code);
     await _flutterTts.speak(text);

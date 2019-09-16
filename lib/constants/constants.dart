@@ -1,9 +1,11 @@
 const LANGUAGES = const [
-  const Language('Francais', 'fr_FR'),
-  const Language('English', 'en_US'),
-  const Language('Pусский', 'ru_RU'),
-  const Language('Italiano', 'it_IT'),
-  const Language('Español', 'es_ES'),
+  const Language('English (US)', 'en-US'),
+  const Language('English (UK)', 'en-UK'),
+  const Language('日本語', 'ja-JP'),
+  const Language('Francais', 'fr-FR'),
+  const Language('Pусский', 'ru-RU'),
+  const Language('Italiano', 'it-IT'),
+  const Language('Español', 'es-ES'),
 ];
 
 class Language {

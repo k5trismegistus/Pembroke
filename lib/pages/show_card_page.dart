@@ -50,8 +50,28 @@ class _ShowCardWidgetState extends State<ShowCardWidget> {
     }
   }
 
-  void onPressPlayButton() {
+  void onPressPlayButton() async {
     var _textToSpeech = TextToSpeechStore.getInstance();
+
+    print(widget.currentCard.lang().code);
+    if (!(await _textToSpeech.checkIsLanguageAvailable(widget.currentCard.lang()))) {
+      showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text("Language not available"),
+            content: Text("This language is not installed"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("OK"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
     _textToSpeech.speak(widget.currentCard.text, widget.currentCard.lang());
   }
 
