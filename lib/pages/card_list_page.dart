@@ -55,6 +55,30 @@ class _CardListPageState extends State<CardListPage> {
             new MaterialPageRoute(builder: (context) => new ShowCardPage(currentCard: card, cardIds: _conditionedCardIds,)),
           );
         },
+        onLongPress: () {
+          showDialog(
+            context: context,
+            builder: (_) {
+              return SimpleDialog(
+                title: Text("Action"),
+                children: <Widget>[
+                  SimpleDialogOption(
+                    child: Text("Delete this card"),
+                    onPressed: () {
+                      cardRepository.removeCardById(card.id);
+                      setState(() {
+                        _cardList.removeAt(
+                          _cardList.indexOf(card)
+                        );
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
         child: Column(
           children: <Widget>[
             Container(

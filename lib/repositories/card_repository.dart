@@ -42,6 +42,18 @@ class CardRepository {
     return models.Card.fromMap(result[0]);
   }
 
+  Future<void> removeCardById(int id) async {
+    final Database _db = DbStore.database;
+
+    await _db.delete(
+      'cards',
+      where: 'id = ?',
+      whereArgs: [id]
+    );
+
+    return;
+  }
+
   Future<List<int>> listIds() async {
     final Database _db = DbStore.database;
 
