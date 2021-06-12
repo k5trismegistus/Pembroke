@@ -61,8 +61,7 @@ class VoiceRecognizer {
   }
 
   void startListening(Language lang) async {
-    var langCode = lang.code;
-    await _speech.listen(locale: langCode);
+    await _speech.listen(locale: _langCode(lang));
   }
 
   void cancelListening() async {
@@ -74,5 +73,10 @@ class VoiceRecognizer {
     await _speech.stop();
     print(_lastRecognizedText);
     return _lastRecognizedText;
+  }
+
+  // speech_recognition requires language code in en_US style.
+  String _langCode(Language lang) {
+    return lang.code.replaceAll('-', '_');
   }
 }
